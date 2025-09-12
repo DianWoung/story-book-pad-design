@@ -1,0 +1,5 @@
+{
+  "name": "AI Children's Storybook Video Generator",
+  "description": "An application that generates short, animated storybooks for children. Users can specify characters, settings, and themes to create a unique story with generated images, voice narration, and subtitles, presented as a video-like experience.",
+  "requestFramePermissions": []
+}
