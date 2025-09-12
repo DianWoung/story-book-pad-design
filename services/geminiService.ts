@@ -8,6 +8,29 @@ if (!process.env.API_KEY) {
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
+export const generateCharacterDescription = async (formData: Pick<StoryFormData, 'character' | 'personality'>): Promise<string> => {
+  const { character, personality } = formData;
+  const prompt = `
+    You are an art director creating a character sheet for a children's book illustrator.
+    Based on the character '${character}' who is '${personality}', provide a concise but detailed visual description.
+    This description will be used to ensure the character looks the same in every illustration.
+    Focus on consistent, simple features like main colors, clothing, and one or two key accessories.
+    The style is a cute, simple cartoon for young children.
+    Example: 'A small squirrel with fluffy, warm-brown fur. He always wears a tiny, bright blue backpack and has a curious, wide-eyed expression.'
+  `;
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: prompt,
+    });
+    return response.text;
+  } catch (error) {
+    console.error("Error generating character description:", error);
+    throw new Error("Failed to design the character.");
+  }
+};
+
+
 const generateStoryPrompt = (formData: StoryFormData): string => {
   const { character, personality, setting, theme, age, length, language } = formData;
   const langMap = { en: 'English', zh: 'Chinese (Mandarin)' };
@@ -46,19 +69,22 @@ export const generateStory = async (formData: StoryFormData): Promise<string> =>
   }
 };
 
-const generateImagePrompt = (segmentText: string, language: 'en' | 'zh'): string => {
-  const languageInstruction = language === 'zh' ? 'The following text is in Chinese:' : 'The following text is in English:';
+const generateImagePrompt = (segmentText: string, language: 'en' | 'zh', characterDescription: string): string => {
+  const languageInstruction = language === 'zh' ? 'The following story text is in Chinese:' : 'The following story text is in English:';
   return `
     A vibrant, colorful, and cheerful children's book illustration.
     Style: Cute cartoon, simple shapes, friendly characters, bright and happy background. No text, letters, or words.
-    The scene should visually represent the following story segment.
+
+    **CRITICAL CHARACTER DESIGN:** The main character MUST be drawn exactly according to this description to ensure consistency: "${characterDescription}"
+    
+    The scene should visually represent the following story segment, featuring the character described above.
     ${languageInstruction} "${segmentText}"
   `;
 }
 
-export const generateImageForSegment = async (segmentText: string, language: 'en' | 'zh'): Promise<string> => {
+export const generateImageForSegment = async (segmentText: string, language: 'en' | 'zh', characterDescription: string): Promise<string> => {
   try {
-    const prompt = generateImagePrompt(segmentText, language);
+    const prompt = generateImagePrompt(segmentText, language, characterDescription);
     const response = await ai.models.generateImages({
         model: 'imagen-4.0-generate-001',
         prompt: prompt,

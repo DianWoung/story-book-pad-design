@@ -1,7 +1,7 @@
 import React from 'react';
 // FIX: Changed `import type` to `import` to allow using the enum as a value.
 import { GenerationStep } from '../types';
-import { BookOpenIcon, PhotoIcon, ChatBubbleBottomCenterTextIcon, SparklesIcon } from './icons/Icons';
+import { BookOpenIcon, PhotoIcon, SparklesIcon, UserCircleIcon } from './icons/Icons';
 
 interface LoadingScreenProps {
   currentStep: GenerationStep;
@@ -10,9 +10,9 @@ interface LoadingScreenProps {
 
 const stepIcons: Record<GenerationStep, React.ReactElement> = {
   [GenerationStep.IDLE]: <SparklesIcon className="w-8 h-8" />,
+  [GenerationStep.CHARACTER]: <UserCircleIcon className="w-8 h-8" />,
   [GenerationStep.STORY]: <BookOpenIcon className="w-8 h-8" />,
   [GenerationStep.IMAGES]: <PhotoIcon className="w-8 h-8" />,
-  [GenerationStep.AUDIO]: <ChatBubbleBottomCenterTextIcon className="w-8 h-8" />,
 };
 
 const LoadingScreen: React.FC<LoadingScreenProps> = ({ currentStep, progress }) => {
