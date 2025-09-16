@@ -4,7 +4,6 @@ export interface StoryFormData {
   theme: string;
   age: number;
   length: 'short' | 'medium' | 'long';
-  language: 'en' | 'zh';
 }
 
 export enum GenerationStep {

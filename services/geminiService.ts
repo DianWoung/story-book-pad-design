@@ -1,4 +1,3 @@
-
 import { GoogleGenAI } from "@google/genai";
 import type { StoryFormData } from '../types';
 
@@ -31,8 +30,8 @@ export const generateCharacterDescription = async (formData: Pick<StoryFormData,
 };
 
 
-const generateStoryPrompt = (formData: StoryFormData): string => {
-  const { character, setting, theme, age, length, language } = formData;
+const generateStoryPrompt = (formData: StoryFormData, language: 'en' | 'zh'): string => {
+  const { character, setting, theme, age, length } = formData;
   const langMap = { en: 'English', zh: 'Chinese (Mandarin)' };
   const lengthMap = { short: 'about 150 words', medium: 'about 300 words', long: 'about 500 words' };
   
@@ -54,9 +53,9 @@ const generateStoryPrompt = (formData: StoryFormData): string => {
   `;
 };
 
-export const generateStory = async (formData: StoryFormData): Promise<string> => {
+export const generateStory = async (formData: StoryFormData, language: 'en' | 'zh'): Promise<string> => {
   try {
-    const prompt = generateStoryPrompt(formData);
+    const prompt = generateStoryPrompt(formData, language);
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
       contents: prompt,

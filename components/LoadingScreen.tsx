@@ -1,11 +1,11 @@
 import React from 'react';
-// FIX: Changed `import type` to `import` to allow using the enum as a value.
 import { GenerationStep } from '../types';
 import { BookOpenIcon, PhotoIcon, SparklesIcon, UserCircleIcon } from './icons/Icons';
 
 interface LoadingScreenProps {
   currentStep: GenerationStep;
   progress: number;
+  language: 'en' | 'zh';
 }
 
 const stepIcons: Record<GenerationStep, React.ReactElement> = {
@@ -15,7 +15,30 @@ const stepIcons: Record<GenerationStep, React.ReactElement> = {
   [GenerationStep.IMAGES]: <PhotoIcon className="w-8 h-8" />,
 };
 
-const LoadingScreen: React.FC<LoadingScreenProps> = ({ currentStep, progress }) => {
+const stepTextMap = {
+  'en': {
+    [GenerationStep.IDLE]: 'Ready to Create',
+    [GenerationStep.CHARACTER]: 'Designing the Character...',
+    [GenerationStep.STORY]: 'Writing the Story...',
+    [GenerationStep.IMAGES]: 'Illustrating the Pages...',
+  },
+  'zh': {
+    [GenerationStep.IDLE]: '准备创作',
+    [GenerationStep.CHARACTER]: '正在设计角色...',
+    [GenerationStep.STORY]: '正在创作故事...',
+    [GenerationStep.IMAGES]: '正在绘制插图...',
+  }
+};
+
+const LoadingScreen: React.FC<LoadingScreenProps> = ({ currentStep, progress, language }) => {
+  const T = language === 'zh' ? {
+    wait: "请稍候，魔法正在酝酿中！"
+  } : {
+    wait: "Please wait, magic is in the works!"
+  };
+
+  const translatedStep = stepTextMap[language][currentStep] || currentStep;
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-blue-100 to-purple-200 p-4">
       <div className="w-full max-w-md text-center">
@@ -47,8 +70,8 @@ const LoadingScreen: React.FC<LoadingScreenProps> = ({ currentStep, progress }) 
           </div>
         </div>
         
-        <h2 className="text-3xl font-bold text-gray-800 mt-8 animate-pulse">{currentStep}</h2>
-        <p className="text-gray-600 mt-2">Please wait, magic is in the works!</p>
+        <h2 className="text-3xl font-bold text-gray-800 mt-8 animate-pulse">{translatedStep}</h2>
+        <p className="text-gray-600 mt-2">{T.wait}</p>
         
         <div className="w-full bg-gray-200 rounded-full h-2.5 mt-8 overflow-hidden">
           <div 
