@@ -1,6 +1,5 @@
 export interface StoryFormData {
   character: string;
-  personality: string;
   setting: string;
   theme: string;
   age: number;

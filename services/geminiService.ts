@@ -8,11 +8,11 @@ if (!process.env.API_KEY) {
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
-export const generateCharacterDescription = async (formData: Pick<StoryFormData, 'character' | 'personality'>): Promise<string> => {
-  const { character, personality } = formData;
+export const generateCharacterDescription = async (formData: Pick<StoryFormData, 'character'>): Promise<string> => {
+  const { character } = formData;
   const prompt = `
     You are an art director creating a character sheet for a children's book illustrator.
-    Based on the character '${character}' who is '${personality}', provide a concise but detailed visual description.
+    Based on the character description "${character}", provide a concise but detailed visual description.
     This description will be used to ensure the character looks the same in every illustration.
     Focus on consistent, simple features like main colors, clothing, and one or two key accessories.
     The style is a cute, simple cartoon for young children.
@@ -32,7 +32,7 @@ export const generateCharacterDescription = async (formData: Pick<StoryFormData,
 
 
 const generateStoryPrompt = (formData: StoryFormData): string => {
-  const { character, personality, setting, theme, age, length, language } = formData;
+  const { character, setting, theme, age, length, language } = formData;
   const langMap = { en: 'English', zh: 'Chinese (Mandarin)' };
   const lengthMap = { short: 'about 150 words', medium: 'about 300 words', long: 'about 500 words' };
   
@@ -43,8 +43,7 @@ const generateStoryPrompt = (formData: StoryFormData): string => {
     The total length should be ${lengthMap[length]}.
 
     The story must feature:
-    - Main Character: A ${character}
-    - Character's Personality: ${personality}
+    - Main Character: ${character}
     - Setting: ${setting}
     - Central Theme: ${theme}
 
